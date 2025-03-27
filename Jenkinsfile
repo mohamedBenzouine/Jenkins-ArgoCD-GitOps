@@ -3,6 +3,9 @@ pipeline {
 	tools{
 		nodejs 'NodeJS'
 	}
+	environment {
+		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
+	}
 	
 	stages {
 		stage('Checkout Github'){
@@ -17,9 +20,10 @@ pipeline {
 		}
 		stage('Build Docker Image'){
 			steps {
-				sh '''
-				echo 'Build Docker Image'
-				'''
+				script {
+					echo 'building docker image ...'
+					docker.build("${DOCKER_HUB_REPO}:latest")
+				}
 			}
 		}
 		stage('Trivy Scan'){
