@@ -5,7 +5,7 @@ pipeline {
 	}
 	environment {
 		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
-		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub
+		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub'
 '
 	}
 	
