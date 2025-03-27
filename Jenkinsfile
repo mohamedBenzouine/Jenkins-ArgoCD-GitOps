@@ -5,6 +5,8 @@ pipeline {
 	}
 	environment {
 		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
+		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub
+'
 	}
 	
 	stages {
@@ -34,9 +36,12 @@ pipeline {
 		}
 		stage('Push Image to DockerHub'){
 			steps {
-				sh '''
-				echo 'Push Image to DockerHub'
-				'''
+				script {
+					echo 'pushing docker image to DockerHub...'
+					docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS_ID}"){
+						dockerImage.push('latest')
+						}
+					}
 				}
 			}
 		stage('Install Kubectl & ArgoCD CLI'){
