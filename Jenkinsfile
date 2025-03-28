@@ -20,6 +20,7 @@ pipeline {
 				sh 'npm install'
 			}
 		}
+		
 		stage('Build Docker Image'){
 			steps {
 				script {
