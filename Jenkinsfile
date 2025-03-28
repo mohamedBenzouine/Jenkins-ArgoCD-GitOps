@@ -8,6 +8,7 @@ pipeline {
 	environment {
 		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
 		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub'
+		KUBE_BIN = "${WORKSPACE}/bin"
 	}
 	
 	stages {
@@ -47,18 +48,35 @@ pipeline {
 					}
 				}
 			}
-		stage('Install Kubectl & ArgoCD CLI'){
-			steps {
-				sh '''
-				echo 'installing Kubectl & ArgoCD cli...'
-				curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-				chmod +x kubectl
-				sudo mv kubectl /usr/local/bin/kubectl
-				curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-				chmod +x /usr/local/bin/argocd
-				'''
-			}
-		}
+	       stage('Install Kubectl & ArgoCD CLI') {
+            steps {
+                sh """
+                echo 'Installing Kubectl & ArgoCD CLI...'
+                
+                # Create bin directory in workspace
+                mkdir -p ${KUBE_BIN}
+                
+                # Install kubectl
+                curl -L -o ${KUBE_BIN}/kubectl "https://dl.k8s.io/release/\$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                chmod +x ${KUBE_BIN}/kubectl
+                
+                # Install ArgoCD CLI
+                curl -sSL -o ${KUBE_BIN}/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+                chmod +x ${KUBE_BIN}/argocd
+                
+                # Add to PATH
+                export PATH=${KUBE_BIN}:\$PATH
+                
+                # Verify installations
+                ${KUBE_BIN}/kubectl version --client
+                ${KUBE_BIN}/argocd version --client
+                """
+                
+                script {
+                    env.PATH = "${KUBE_BIN}:${env.PATH}"
+                }
+            }
+        }
 
 		stage('Apply Kubernetes Manifests & Sync App with ArgoCD'){
 			steps {
