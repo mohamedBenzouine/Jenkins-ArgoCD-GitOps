@@ -1,5 +1,6 @@
 pipeline {
 	agent any
+
 	tools{
 		nodejs 'NodeJS'
 	}
@@ -65,7 +66,8 @@ pipeline {
     						sh '''
 						argocd login 192.168.1.86:8080 --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
 						argocd app sync argocdjenkins
-						}'''
+						'''
+				}
 			}
 		}
 	}
