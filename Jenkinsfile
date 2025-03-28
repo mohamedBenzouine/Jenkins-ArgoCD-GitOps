@@ -1,8 +1,9 @@
 pipeline {
 	agent any
-	/*tools{
+	tools{
 		nodejs 'NodeJS'
 	}
+	/*
 	environment {
 		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
 		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub'
@@ -16,10 +17,7 @@ pipeline {
 		}		
 		stage('Install node dependencies'){
 			steps {
-				sh '''
-				echo 'Install Kubectl & ArgoCD CLI'
-				'''
-				/*sh 'npm install'*/
+				sh 'npm install'
 			}
 		}
 		stage('Build Docker Image'){
