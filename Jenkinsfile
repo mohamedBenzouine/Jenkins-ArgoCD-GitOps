@@ -30,8 +30,8 @@ pipeline {
 		}
 		stage('Trivy Scan'){
 			steps {
-					sh 'trivy image --severity HIGH,CRITICAL --format table -o trivy-scan-report.txt ${DOCKER_HUB_REPO}:latest'
-					//sh 'trivy image --severity HIGH,CRITICAL --skip-update --format table -o trivy-scan-report.txt ${DOCKER_HUB_REPO}:latest'
+					//sh 'trivy image --severity HIGH,CRITICAL --format table -o trivy-scan-report.txt ${DOCKER_HUB_REPO}:latest'
+					sh 'trivy image --severity HIGH,CRITICAL --skip-update --format table -o trivy-scan-report.txt ${DOCKER_HUB_REPO}:latest'
 				}
 		}
 		stage('Push Image to DockerHub'){
