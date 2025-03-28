@@ -20,7 +20,7 @@ pipeline {
 				sh 'npm install'
 			}
 		}
-		
+
 		stage('Build Docker Image'){
 			steps {
 				script {
@@ -35,6 +35,7 @@ pipeline {
 					sh 'trivy image --severity HIGH,CRITICAL --skip-update --format table -o trivy-scan-report.txt ${DOCKER_HUB_REPO}:latest'
 				}
 		}
+
 		stage('Push Image to DockerHub'){
 			steps {
 				script {
@@ -48,15 +49,23 @@ pipeline {
 		stage('Install Kubectl & ArgoCD CLI'){
 			steps {
 				sh '''
-				echo 'Install Kubectl & ArgoCD CLI'
+				echo 'installing Kubectl & ArgoCD cli...'
+				curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+				chmod +x kubectl
+				mv kubectl /usr/local/bin/kubectl
+				curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+				chmod +x /usr/local/bin/argocd
 				'''
 			}
 		}
+
 		stage('Apply Kubernetes Manifests & Sync App with ArgoCD'){
 			steps {
-				sh '''
-				echo 'Apply Kubernetes Manifests & Sync App with ArgoCD'
-				'''
+				kubeconfig(credentialsId: 'kubeconfig', serverUrl: 'https://192.168.49.2:8443') {
+    						sh '''
+						argocd login 192.168.1.86:8080 --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
+						argocd app sync argocdjenkins
+						}'''
 			}
 		}
 	}
