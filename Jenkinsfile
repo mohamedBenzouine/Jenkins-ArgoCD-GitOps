@@ -13,7 +13,7 @@ pipeline {
 	stages {
 		stage('Checkout Github'){
 			steps {
-			git branch: 'main', credentialsId: 'gitops-token', url: 'https://github.com/mohamedBenzouine/Jenkins-ArgoCD-GitOps.git'
+			git branch: 'main', credentialsId: 'GitOps-Github-token', url: 'https://github.com/mohamedBenzouine/Jenkins-ArgoCD-GitOps.git'
 			}
 		}		
 		stage('Install node dependencies'){
