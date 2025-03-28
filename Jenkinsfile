@@ -3,11 +3,11 @@ pipeline {
 	tools{
 		nodejs 'NodeJS'
 	}
-	/*
+	
 	environment {
 		DOCKER_HUB_REPO = 'benzouine1991/jenkins'
-		DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub'
-	}*/
+		//DOCKER_HUB_CREDENTIALS_ID = 'gitops-dockerhub'
+	}
 	
 	stages {
 		stage('Checkout Github'){
@@ -23,11 +23,8 @@ pipeline {
 		stage('Build Docker Image'){
 			steps {
 				script {
-					sh '''
-				echo 'Install Kubectl & ArgoCD CLI'
-				'''
-					/*echo 'building docker image ...'
-					dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")*/
+					echo 'building docker image ...'
+					dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
 				}
 			}
 		}
